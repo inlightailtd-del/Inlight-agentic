@@ -20,14 +20,16 @@ from "../departments/department-knowledge";
 
 import { executionLog }
 from "./execution-log";
+import { saveKnowledge }
+from "../lib/company-knowledge-db";
 
-export function runExecutionEngine() {
+export async function runExecutionEngine() {
 
   const pendingTasks =
     processQueue();
 
-  pendingTasks.forEach(
-    (task: any) => {
+  for (const task of pendingTasks) {
+  
       if (
   task.task
     .toLowerCase()
@@ -80,6 +82,10 @@ companyKnowledge.save({
   createdAt:
     new Date().toISOString(),
 });
+await saveKnowledge(
+  task.task,
+  task.agentId
+);
 departmentKnowledge.save({
   department:
     task.agentId,
@@ -116,7 +122,9 @@ performanceTracker.track(
 );
 
     }
-  );
+  
+  
+
 
   return pendingTasks.length;
 }
