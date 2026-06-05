@@ -90,6 +90,11 @@ import { startAutonomousRunner }
 from "../agents/autonomous-runner";
 import { AgentStatusBoard }
 from "../components/agent-status-board";
+import { researchHistory }
+from "../research/research-history";
+
+import { ResearchHistoryBoard }
+from "../components/research-history-board";
 
 import { sharedMemory }
 from "../agents/shared-memory";
@@ -139,6 +144,10 @@ export default function Home() {
 ] = useState<any>({});
   const [health, setHealth] =
   useState<any>({});
+  const [
+  researchData,
+  setResearchData
+] = useState<any[]>([]);
   const [ceoMetrics,
 setCEOMetrics] =
   useState<any>({});
@@ -208,6 +217,9 @@ const [sharedData, setSharedData] =
       "runtime-agents"
       
     );
+    setResearchData(
+  researchHistory.getAll()
+);
     setDepartmentPerformance(
   getDepartmentPerformance()
 );
@@ -222,6 +234,9 @@ const [sharedData, setSharedData] =
 );
     setKnowledge(
   companyKnowledge.getAll()
+);
+setResearchData(
+  researchHistory.getAll()
 );
 setDepartmentIntel(
   departmentKnowledge.getAll()
@@ -923,6 +938,11 @@ setStatuses(
 <KnowledgeSearchBoard
   knowledge={
     knowledge
+  }
+/>
+<ResearchHistoryBoard
+  history={
+    researchData
   }
 />
 <DepartmentBoard

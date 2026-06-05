@@ -1,15 +1,14 @@
 import { askOllama } from "../lib/ollama";
 import { getCEOContext } from "./ceo-memory";
-
-import { retrieveMemory }
-from "../brain/memory-retrieval";
-
+  
+import { getSmartMemory }
+from "../brain/smart-memory";
 export async function executeCEOBrain(
   task: string
 ) {
 
   const memory =
-    retrieveMemory(task);
+  getSmartMemory(task);
 
   const context =
     getCEOContext();
