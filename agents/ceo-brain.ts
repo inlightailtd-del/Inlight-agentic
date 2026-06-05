@@ -1,9 +1,16 @@
 import { askOllama } from "../lib/ollama";
 import { getCEOContext } from "./ceo-memory";
 
+import { retrieveMemory }
+from "../brain/memory-retrieval";
+
 export async function executeCEOBrain(
   task: string
 ) {
+
+  const memory =
+    retrieveMemory(task);
+
   const context =
     getCEOContext();
 
@@ -12,15 +19,15 @@ Company Context:
 
 ${context}
 
+Previous Knowledge:
+
+${JSON.stringify(
+  memory,
+  null,
+  2
+)}
+
 You are the CEO Agent of Inlight Agency.
-
-Your responsibilities:
-
-- Business strategy
-- Growth planning
-- AI agency scaling
-- Service development
-- Team coordination
 
 User Task:
 

@@ -1,14 +1,63 @@
 "use client";
 
 import { agentStatus } from "../agents/agent-status";
+import { DepartmentManagerBoard }
+from "../components/department-manager-board";
 import { ActivityTimeline }
 from "../components/activity-timeline";
+import { getCompanyHealth }
+from "../management/company-health";
+
+import { CompanyHealthBoard }
+from "../components/company-health-board";
+import { messageCenter }
+from "../agents/message-center";
+import { KnowledgeSearchBoard }
+from "../components/knowledge-search-board";
+import { MessageBoard }
+from "../components/message-board";
+import { taskEscalation }
+from "../management/task-escalation";
+import { companyKnowledge }
+from "../brain/company-knowledge";
+
+import { projectMemory }
+from "../brain/project-memory";
+import { departmentKnowledge }
+from "../departments/department-knowledge";
+
+import { DepartmentIntelligenceBoard }
+from "../components/department-intelligence-board";
+
+import { clientMemory }
+from "../brain/client-memory";
+
+import { CompanyBrainBoard }
+from "../components/company-brain-board";
+
+import { TaskEscalationBoard }
+from "../components/task-escalation-board";
+import { departmentReports }
+from "../departments/department-reports";
+import { ceoNotifications }
+from "../management/ceo-notifications";
+
+import { CEONotificationBoard }
+from "../components/ceo-notification-board";
+
+import { DepartmentReportBoard }
+from "../components/department-report-board";
 import { agentInbox }
 from "../agents/agent-inbox";
 import { performanceTracker }
 from "../agents/performance-tracker";
 import { AgencyAnalyticsCenter }
 from "../components/agency-analytics-center"; 
+import { departments }
+from "../departments/departments";
+
+import { DepartmentBoard }
+from "../components/department-board";
 import { ActivityFeed }
 from "../components/activity-feed";
 import { CEOCommandCenter }
@@ -60,19 +109,72 @@ import {
   memory,
   companyBrain,
 } from "../memory/memory";
+import { getCEOMetrics }
+from "../management/ceo-metrics";
+
+import { CEOMetricsBoard }
+from "../components/ceo-metrics-board";
+import { getDepartmentPerformance }
+from "../management/department-performance";
+
+import { DepartmentPerformanceBoard }
+from "../components/department-performance-board";
+
+
+
+
+
+
+
+
 
 export default function Home() {
   const [output, setOutput] = useState("");
   const [task, setTask] = useState("");
   const [agentName, setAgentName] =
   useState("");
+  const [
+  departmentPerformance,
+  setDepartmentPerformance
+] = useState<any>({});
+  const [health, setHealth] =
+  useState<any>({});
+  const [ceoMetrics,
+setCEOMetrics] =
+  useState<any>({});
 
 const [agentRole, setAgentRole] =
   useState("");
+  const [
+  escalations,
+  setEscalations
+] = useState<any[]>([]);
+const [
+  departmentIntel,
+  setDepartmentIntel
+] = useState<any[]>([]);
+  const [
+  notifications,
+  setNotifications
+] = useState<any[]>([]);
+const [knowledge, setKnowledge] =
+  useState<any[]>([]);
+
+const [projectMemoryData,
+setProjectMemoryData] =
+  useState<any[]>([]);
+
+const [clientMemoryData,
+setClientMemoryData] =
+  useState<any[]>([]);
   const [systemHealth, setSystemHealth] =
   useState<any>({});
   const [performance, setPerformance] =
   useState({});
+  const [messages, setMessages] =
+  useState<any[]>([]);
+  const [reports, setReports] =
+  useState<any[]>([]);
   const [logs, setLogs] =
   useState<any[]>([]);
   const [results, setResults] =
@@ -106,6 +208,44 @@ const [sharedData, setSharedData] =
       "runtime-agents"
       
     );
+    setDepartmentPerformance(
+  getDepartmentPerformance()
+);
+    setCEOMetrics(
+  getCEOMetrics()
+);
+    setHealth(
+  getCompanyHealth()
+);
+    setDepartmentIntel(
+  departmentKnowledge.getAll()
+);
+    setKnowledge(
+  companyKnowledge.getAll()
+);
+setDepartmentIntel(
+  departmentKnowledge.getAll()
+);
+
+setProjectMemoryData(
+  projectMemory.getAll()
+);
+
+setClientMemoryData(
+  clientMemory.getAll()
+);
+    setEscalations(
+  taskEscalation.getAll()
+);
+    setReports(
+  departmentReports.getAll()
+);
+setNotifications(
+  ceoNotifications.getAll()
+);
+    setMessages(
+  messageCenter.getAll()
+);
     setSystemHealth(
   monitorSystem()
 );
@@ -117,6 +257,12 @@ const [sharedData, setSharedData] =
 );
 setLogs(
   executionLog.getAll()
+);
+setReports(
+  departmentReports.getAll()
+);
+setNotifications(
+  ceoNotifications.getAll()
 );
 setPerformance(
   performanceTracker.getAll()
@@ -250,6 +396,9 @@ const response =
   await orchestrator.execute(
     task
   );
+  setMessages(
+  messageCenter.getAll()
+);
   runExecutionEngine();
 
 setLogs(
@@ -761,6 +910,60 @@ setStatuses(
   queue={queue}
   memory={sharedData}
   logs={logs}
+/>
+<CompanyBrainBoard
+  knowledge={knowledge}
+  projects={
+    projectMemoryData
+  }
+  clients={
+    clientMemoryData
+  }
+/>
+<KnowledgeSearchBoard
+  knowledge={
+    knowledge
+  }
+/>
+<DepartmentBoard
+  departments={
+    departments
+  }
+/>
+<DepartmentReportBoard
+  reports={reports}
+/>
+<MessageBoard
+  messages={messages}
+/>
+<CEONotificationBoard
+  notifications={
+    notifications
+  }
+/>
+<TaskEscalationBoard
+  escalations={
+    escalations
+  }
+/>
+<DepartmentIntelligenceBoard
+  knowledge={
+    departmentIntel
+  }
+/>
+<DepartmentManagerBoard />
+<CompanyHealthBoard
+  health={health}
+/>
+<CEOMetricsBoard
+  metrics={
+    ceoMetrics
+  }
+/>
+<DepartmentPerformanceBoard
+  performance={
+    departmentPerformance
+  }
 />
 </div>
 

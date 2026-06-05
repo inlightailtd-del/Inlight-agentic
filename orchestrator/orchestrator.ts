@@ -15,6 +15,13 @@ import { executeCEOBrain } from "../agents/ceo-brain";
 import { ceoAgent } from "../agents/ceo-agent";
 import { agents } from "../agents";
 import { salesAgent } from "../agents/sales-agent";
+import { messageCenter }
+from "../agents/message-center";
+import { routeTask }
+from "../departments/department-routing";
+
+import { getDepartment }
+from "../departments/department-manager";
 import {
   contentAgent,
   executeContentTask,
@@ -23,6 +30,20 @@ import {
 export const orchestrator = {
   async execute(task: string) {
     const prompt = task.toLowerCase();
+    const departmentId =
+  routeTask(task);
+
+const department =
+  getDepartment(
+    departmentId
+  );
+  if (department) {
+  messageCenter.send(
+    "ceo-agent",
+    department.manager,
+    `New task assigned: ${task}`
+  );
+}
     if (
   isBusinessWorkflow(task)
 ) {
@@ -52,12 +73,15 @@ export const orchestrator = {
       prompt.includes("caption")
     ) {
       return {
-        agent: contentAgent,
-        result:
-  await executeContentTask(
-    task
-  ),
-      };
+  agent: contentAgent,
+
+  department,
+
+  result:
+    await executeContentTask(
+      task
+    ),
+};
     }
     if (
   prompt.includes("ad") ||
@@ -97,12 +121,15 @@ export const orchestrator = {
   prompt.includes("google")
 ) {
   return {
-    agent: seoAgent,
-    result:
-      await executeSEOBrain(
-        task
-      ),
-  };
+  agent: seoAgent,
+
+  department,
+
+  result:
+    await executeSEOBrain(
+      task
+    ),
+};
 }
     if (
   prompt.includes("research") ||
@@ -111,12 +138,15 @@ export const orchestrator = {
   prompt.includes("trend")
 ) {
   return {
-    agent: researchAgent,
-    result:
-      await executeResearchBrain(
-        task
-      ),
-  };
+  agent: researchAgent,
+
+  department,
+
+  result:
+    await executeResearchBrain(
+      task
+    ),
+};
 }
     if (
       prompt.includes("lead") ||
@@ -125,6 +155,9 @@ export const orchestrator = {
     ) {
       return {
   agent: salesAgent,
+
+  department,
+
   result:
     await executeSalesBrain(
       task
@@ -166,8 +199,13 @@ Decide which agent should handle this task and explain why.
 
 return {
   agent: ceoAgent,
-  result: aiResponse,
+
+  department,
+
+  result:
+    await executeCEOBrain(
+      task
+    ),
 };
-  },
+  }
 };
-console.log("Registered Agents:", agents);
